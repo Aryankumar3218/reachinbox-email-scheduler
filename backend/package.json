@@ -9,7 +9,9 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "use:sqlite": "node -e \"const fs=require('fs'); fs.copyFileSync('prisma/schema.sqlite.prisma', 'prisma/schema.prisma'); console.log('Switched schema to SQLite');\" && prisma generate",
+    "use:postgres": "git checkout prisma/schema.prisma && prisma generate"
   },
   "dependencies": {
     "@bull-board/api": "^5.21.3",
