@@ -90,6 +90,11 @@ export const apiClient = {
     const res = await axios.post(`${API_BASE}/auth/google`, user);
     return res.data;
   },
+
+  loginWithCredentials: async (credentials: { email: string; password: string; name?: string }) => {
+    const res = await axios.post(`${API_BASE}/auth/login`, credentials);
+    return res.data;
+  },
 };
 
 export default apiClient;

@@ -1,0 +1,15 @@
+﻿{
+    "devDependencies":  {
+                            "concurrently":  "^8.2.2"
+                        },
+    "description":  "ReachInbox full-stack email scheduler - unified project runner",
+    "name":  "reachinbox-scheduler",
+    "version":  "1.0.0",
+    "scripts":  {
+                    "install:all":  "npm install --prefix backend \u0026\u0026 npm install --prefix frontend",
+                    "backend":  "npm run dev --prefix backend",
+                    "frontend":  "npm run dev --prefix frontend",
+                    "dev":  "concurrently --names \"BACKEND,FRONTEND\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+                    "db:push":  "npm run prisma:push --prefix backend"
+                }
+}

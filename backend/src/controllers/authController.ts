@@ -90,6 +90,72 @@ export class AuthController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  /**
+   * POST /api/auth/login
+   * Supports email/ID + password authentication
+   */
+  public static async login(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, password, name } = req.body;
+      if (!email || typeof email !== 'string' || !email.includes('@')) {
+        res.status(400).json({ error: 'Please enter a valid email address.' });
+        return;
+      }
+      if (!password || typeof password !== 'string' || password.length < 3) {
+        res.status(400).json({ error: 'Password must be at least 3 characters long.' });
+        return;
+      }
+
+      const cleanEmail = email.trim().toLowerCase();
+      let user = await prisma.user.findUnique({ where: { email: cleanEmail } });
+
+      if (!user) {
+        // Automatically create user account on first login
+        const displayName =
+          name?.trim() ||
+          cleanEmail
+            .split('@')[0]
+            .replace(/[._-]/g, ' ')
+            .replace(/\b\w/g, (c) => c.toUpperCase());
+
+        user = await prisma.user.create({
+          data: {
+            email: cleanEmail,
+            name: displayName,
+            password: password,
+          },
+        });
+      } else {
+        // If user exists and has a password, verify it
+        if (user.password && user.password !== password) {
+          res.status(401).json({ error: 'Invalid password. Please check your credentials.' });
+          return;
+        }
+
+        // If user was previously created via Google without a password, set their password
+        if (!user.password) {
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { password },
+          });
+        }
+      }
+
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name || 'User',
+          picture: user.picture || null,
+        },
+      });
+    } catch (error: any) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 export default AuthController;

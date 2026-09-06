@@ -30,7 +30,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
     setFeedback(null);
     try {
       await apiClient.saveSlackWebhook(webhookUrl, channel);
-      setFeedback({ type: 'success', message: 'Slack webhook configured and connected!' });
+      setFeedback({ type: 'success', message: 'Slack webhook saved and connected successfully.' });
       onStatusUpdated();
     } catch (err: any) {
       setFeedback({
@@ -47,7 +47,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
     setFeedback(null);
     try {
       await apiClient.disconnectSlack();
-      setFeedback({ type: 'success', message: 'Slack disconnected successfully.' });
+      setFeedback({ type: 'success', message: 'Slack disconnected.' });
       onStatusUpdated();
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'Failed to disconnect' });
@@ -63,7 +63,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
       await apiClient.testSlackNotification();
       setFeedback({
         type: 'success',
-        message: 'Live test alert sent to Slack successfully! Check your channel.',
+        message: 'Live test alert sent to Slack successfully. Check your channel.',
       });
     } catch (err: any) {
       setFeedback({
@@ -80,24 +80,24 @@ export const SlackModal: React.FC<SlackModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-[#0f172a] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+      <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/80 bg-slate-900/40">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="h-8 w-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <Slack className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-slate-100">Slack Notifications</h2>
-              <p className="text-xs text-slate-400">Real-time alerts whenever a sender hits hourly limits</p>
+              <h2 className="text-sm font-semibold text-slate-900">Slack Alerts</h2>
+              <p className="text-xs text-slate-500">Dispatch live notifications when hourly limits are reached</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -105,37 +105,37 @@ export const SlackModal: React.FC<SlackModalProps> = ({
         <div className="p-6 space-y-5">
           {feedback && (
             <div
-              className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+              className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
                 feedback.type === 'success'
-                  ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300'
-                  : 'bg-rose-500/10 border border-rose-500/20 text-rose-300'
+                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                  : 'bg-rose-50 border border-rose-200 text-rose-700'
               }`}
             >
               {feedback.type === 'success' ? (
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               ) : (
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
               )}
               <span>{feedback.message}</span>
             </div>
           )}
 
           {/* Connection Status Card */}
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
-                className={`w-3 h-3 rounded-full ${
-                  status?.isConnected ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : 'bg-slate-600'
+                className={`w-2.5 h-2.5 rounded-full ${
+                  status?.isConnected ? 'bg-emerald-500' : 'bg-slate-400'
                 }`}
               />
               <div>
-                <p className="text-xs font-semibold text-slate-200">
-                  {status?.isConnected ? 'Slack Connected & Listening' : 'Slack Not Connected'}
+                <p className="text-xs font-semibold text-slate-900">
+                  {status?.isConnected ? 'Connected' : 'Not Connected'}
                 </p>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-500">
                   {status?.isConnected
-                    ? `Sending alerts to ${status.channel || '#general'}`
-                    : 'Rate-limit events will skip Slack notifications without disruption'}
+                    ? `Posting to ${status.channel || '#general'}`
+                    : 'Rate limit events will skip Slack notifications without disruption'}
                 </p>
               </div>
             </div>
@@ -145,8 +145,7 @@ export const SlackModal: React.FC<SlackModalProps> = ({
                 <button
                   onClick={handleTestAlert}
                   disabled={testing}
-                  className="px-2.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium flex items-center gap-1 transition"
-                  title="Send verifiable test alert to Slack channel"
+                  className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition"
                 >
                   <Send className="w-3 h-3" />
                   <span>{testing ? 'Sending...' : 'Test Alert'}</span>
@@ -154,91 +153,65 @@ export const SlackModal: React.FC<SlackModalProps> = ({
                 <button
                   onClick={handleDisconnect}
                   disabled={loading}
-                  className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs transition"
-                  title="Disconnect Slack"
+                  className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-md text-rose-600 hover:bg-rose-50 border border-rose-200 transition"
                 >
-                  <Unlink className="w-3.5 h-3.5" />
+                  <Unlink className="w-3 h-3" />
+                  <span>Disconnect</span>
                 </button>
               </div>
             )}
           </div>
 
-          {!status?.isConnected && (
-            <>
-              {/* Option A: OAuth Flow */}
-              <div className="space-y-2">
-                <button
-                  onClick={handleOAuthConnect}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#4A154B] hover:bg-[#3f1140] text-white text-xs font-semibold shadow-md transition"
-                >
-                  <Slack className="w-4 h-4" />
-                  <span>Authorize with Slack OAuth</span>
-                </button>
-                <p className="text-[11px] text-center text-slate-500">
-                  Direct OAuth authorization flow with Slack workspace
-                </p>
-              </div>
+          {/* Option A: Quick Incoming Webhook */}
+          <form onSubmit={handleSaveWebhook} className="space-y-3 pt-2 border-t border-slate-200">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-semibold text-slate-800">
+                Incoming Webhook URL
+              </label>
+              <span className="text-[10px] text-slate-500">Instant connection</span>
+            </div>
+            <input
+              type="url"
+              placeholder="https://hooks.slack.com/services/T00/B00/XXXXX"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-mono"
+              required
+            />
 
-              <div className="relative flex py-1 items-center">
-                <div className="flex-grow border-t border-slate-800"></div>
-                <span className="flex-shrink mx-3 text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
-                  or use Incoming Webhook
-                </span>
-                <div className="flex-grow border-t border-slate-800"></div>
-              </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="#outreach-alerts"
+                value={channel}
+                onChange={(e) => setChannel(e.target.value)}
+                className="w-1/2 bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-1/2 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition disabled:opacity-50"
+              >
+                <Link className="w-3.5 h-3.5" />
+                <span>{loading ? 'Saving...' : 'Save Webhook'}</span>
+              </button>
+            </div>
+          </form>
 
-              {/* Option B: Direct Webhook */}
-              <form onSubmit={handleSaveWebhook} className="space-y-3">
-                <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-300">
-                    Slack Incoming Webhook URL
-                  </label>
-                  <div className="relative">
-                    <Link className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                    <input
-                      type="url"
-                      placeholder="https://hooks.slack.com/services/T00/B00/XXXX"
-                      value={webhookUrl}
-                      onChange={(e) => setWebhookUrl(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-medium text-slate-300">Channel Name</label>
-                  <input
-                    type="text"
-                    placeholder="#outreach-alerts"
-                    value={channel}
-                    onChange={(e) => setChannel(e.target.value)}
-                    className="w-full bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition"
-                >
-                  {loading ? 'Saving...' : 'Connect Slack Webhook'}
-                </button>
-              </form>
-            </>
-          )}
-
-          <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
-            <p className="font-semibold text-slate-300">Assignment Requirement Satisfied:</p>
-            <p>
-              • Real OAuth authorize flow & webhook support per user/tenant.
-            </p>
-            <p>
-              • Verifiable Slack Block Kit alert triggered the moment a sender's hourly limit is hit.
-            </p>
-            <p>
-              • Graceful disconnect/reconnect: zero crashes if disconnected; instantly active once connected.
-            </p>
+          {/* Option B: Real OAuth Authorize */}
+          <div className="pt-2 border-t border-slate-200 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-800">Slack OAuth 2.0</span>
+              <span className="text-[10px] text-slate-500">Official App Flow</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleOAuthConnect}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-medium transition"
+            >
+              <Slack className="w-3.5 h-3.5" />
+              <span>Authorize with Slack OAuth</span>
+            </button>
           </div>
         </div>
       </div>

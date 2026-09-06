@@ -31,3 +31,13 @@ Thumbs.db
 postgres_data/
 redis_data/
 es_data/
+# Runtime / database files
+dump.rdb
+*.rdb
+*.db
+backend/prisma/dev.db
+
+# Secrets
+.env
+.env.*
+!.env.example

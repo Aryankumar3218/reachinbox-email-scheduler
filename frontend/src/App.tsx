@@ -127,7 +127,7 @@ export function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const slackParam = urlParams.get('slack');
     if (slackParam === 'connected') {
-      showToast('Slack workspace connected successfully!', 'success');
+      showToast('Slack workspace connected successfully.', 'success');
       fetchSlackStatus();
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (slackParam === 'error') {
@@ -173,7 +173,7 @@ export function App() {
       ...payload,
       userId: user?.id,
     });
-    showToast(`Successfully scheduled ${payload.recipients.length} email(s)!`);
+    showToast(`Successfully queued ${payload.recipients.length} email(s).`);
     fetchScheduled();
     fetchStats();
   };
@@ -191,7 +191,7 @@ export function App() {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID || 'dummy-client-id'}>
-      <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col">
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
         {/* Header */}
         <Header
           user={user}
@@ -203,48 +203,48 @@ export function App() {
 
         {/* Main Content Area */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
-          {/* Tab Controls Bar */}
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-            <div className="flex items-center gap-2">
+          {/* Tab Navigation */}
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="flex items-center gap-1.5 p-1 bg-slate-200/60 rounded-xl">
               <button
                 onClick={() => setActiveTab('scheduled')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition ${
                   activeTab === 'scheduled'
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Calendar className="w-4 h-4" />
-                <span>Scheduled Emails</span>
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-black/30">
+                <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                <span>Scheduled</span>
+                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
                   {scheduledTotal}
                 </span>
               </button>
 
               <button
                 onClick={() => setActiveTab('sent')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition ${
                   activeTab === 'sent'
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Sent Emails</span>
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-black/30">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Sent History</span>
+                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">
                   {sentTotal}
                 </span>
               </button>
 
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition ${
                   activeTab === 'analytics'
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Activity className="w-4 h-4" />
+                <Activity className="w-3.5 h-3.5 text-indigo-600" />
                 <span>Queue & Limits</span>
               </button>
             </div>
@@ -315,18 +315,22 @@ export function App() {
 
         {/* Toast notifications */}
         {toast && (
-          <div className="fixed bottom-6 right-6 z-50 animate-bounce">
+          <div className="fixed bottom-6 right-6 z-50">
             <div
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium border ${
+              className={`flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-xs font-medium border bg-white ${
                 toast.type === 'success'
-                  ? 'bg-emerald-950 text-emerald-200 border-emerald-800'
-                  : 'bg-rose-950 text-rose-200 border-rose-800'
+                  ? 'border-emerald-200 text-slate-800'
+                  : 'border-rose-200 text-slate-800'
               }`}
             >
               {toast.type === 'success' ? (
-                <Check className="w-4 h-4 text-emerald-400" />
+                <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                  <Check className="w-3.5 h-3.5" />
+                </div>
               ) : (
-                <AlertCircle className="w-4 h-4 text-rose-400" />
+                <div className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                </div>
               )}
               <span>{toast.message}</span>
             </div>
